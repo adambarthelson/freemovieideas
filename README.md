@@ -11,7 +11,7 @@ If you don’t have it installed already, it will prompt you to install it.
 
 ### 2. Git clone and this repository
 ```
-cd ~/Desktop && git clone http://repo_url.git && cd "$(basename "$_" .git)" && open .
+cd ~/Desktop && git clone https://github.com/adambarthelson/freemovieideas.git && cd "$(basename "$_" .git)" && open .
 ```
 
 ### 3. Move movie idea images into the `images_to_extract` folder (can do so via a manual copy/paste)
