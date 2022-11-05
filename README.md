@@ -1,4 +1,4 @@
-# FreeMovieIdeas's Janky Image Extractor
+# FreeMovieIdeas's Janky Image Text Extractor
 
 
 ## 1. Prerequisites (Install Git)
