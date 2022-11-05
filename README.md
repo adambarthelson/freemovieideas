@@ -34,7 +34,7 @@ brew install python3 tesseract
 pip3 install pytesseract pandas openpyxl
 ```
 
-4. Extract those movie ideas!
+## Extract those movie ideas!
 ```
 python3 freemovieideas.py
 ```
