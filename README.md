@@ -19,24 +19,19 @@ cd ~/Desktop && git clone http://repo_url.git && cd "$(basename "$_" .git)" && o
 
 ## Installation (via same Terminal window)
 
-1. Install [Homebrew](https://brew.sh)
+1. Install [Docker]()
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-2. Brew install dependencies
+2. Build docker image (took my machine ~2 min)
 ```
-brew install python3 tesseract
-```
-
-3. Install some important Python libraries
-```
-pip3 install pytesseract pandas openpyxl
+docker build -t fmi .
 ```
 
 4. Extract those movie ideas!
 ```
-python3 freemovieideas.py
+docker run --rm --volume $(pwd):/app fmi:latest python3 freemovieideas.py
 ```
 
-An excel file can now be found at `freemovieidea-archive.xlsx`.
+An excel file can now be found at `freemovieidea-archive.xlsx` in your current directory.
