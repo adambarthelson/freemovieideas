@@ -19,10 +19,7 @@ cd ~/Desktop && git clone https://github.com/adambarthelson/freemovieideas.git &
 
 ## Installation (via same Terminal window)
 
-1. Install [Docker]()
-```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
+1. Install [Docker](https://docs.docker.com/desktop/install/mac-install/)
 
 2. Build docker image (took my machine ~2 min)
 ```
