@@ -1,16 +1,28 @@
 import os
+import gc
 import glob
 import openpyxl
 import pytesseract
 from pandas import DataFrame
+import pandas as pd
 from dateutil.parser import parse
 
 def main():
-    images = collect_images('*.jpg')
-    images.append(collect_images('*.png'))
-    images.append(collect_images('*.jpeg'))
+    images = collect_images('./images_to_extract/*.jpg')
+    images.append(collect_images('./images_to_extract/*.png'))
+    images.append(collect_images('./images_to_extract/*.jpeg'))
     images = [item for sublist in images for item in sublist]
-    extract_text_from_images(images)
+
+    df = DataFrame({'Date': [], 'Movie Idea': []})
+    df.to_excel('freemovieidea-archive.xlsx', sheet_name='sheet1', index=False)
+    del df
+
+    for image in images:
+        # try:
+        extract_text_from_image(image)
+        # except Exception:
+            # pass
+
 
 def collect_images(pattern):
     files = []
@@ -56,41 +68,60 @@ def first(iterable, condition = lambda x: True):
     StopIteration
     """
 
-    return next(x for x in iterable if condition(x))
+    return next((x for x in iterable if condition(x)), False)
 
 
-def extract_text_from_images(images):
-    # print("Images to extract from:", images)
-    date_column = []
-    text_column = []
-    for image in images:
-        try:
-            full_text = pytesseract.image_to_string(image).split('\n')
-            full_text = list(filter(None, full_text))
-            full_text = list(map(fix_utf8, full_text))
-            if "< S" in full_text: full_text.remove("< S")
-            if "< ¢-)" in full_text: full_text.remove("< ¢-)")
-            if "< Notes ¢:) Done" in full_text: full_text.remove("< Notes ¢:) Done")
-            date_index = full_text.index(first(full_text, is_date))
-            # print(full_text)
+def extract_text_from_image(image):
+    full_text = pytesseract.image_to_string(image).split('\n')
+    full_text = list(filter(None, full_text))
+    full_text = list(map(fix_utf8, full_text))
+    if "< S" in full_text: full_text.remove("< S")
+    if "< ¢-)" in full_text: full_text.remove("< ¢-)")
+    if "< Notes ¢:) Done" in full_text: full_text.remove("< Notes ¢:) Done")
+    first_date = first(full_text, is_date) # ;)
+    if first_date != False:
+        date_index = full_text.index(first_date)
+        # print(full_text)
+        date = full_text[date_index]
+        if date == '' or date == ' ':
+            date_index += 1
             date = full_text[date_index]
-            if date == '' or date == ' ':
-                date_index += 1
-                date = full_text[date_index]
-            body = '\n'.join(full_text[date_index+1:-3 or None])
-            date_column.append(date)
-            text_column.append(body)
-            # print("Date:", date)
-            # print(body)
-            # print("------------")
-        except Exception:
-            pass
-    write_to_xl(date_column, text_column)
+        body = '\n'.join(full_text[date_index+1:-3 or None])
+        if body == "":
+            body = '\n'.join(full_text[date_index+1:0 or None])
+        print("Date:", date)
+        date = date.encode('utf-8','ignore').decode("utf-8")
+        write_to_xl(date, body)
+        del full_text
+        del body
+        del date_index
+        del date
+        gc.collect()
+        # print("Date:", date)
+        # print(body)
+        # print("------------")
+
 
 
 def write_to_xl(date_column, text_column):
-    df = DataFrame({'Date': date_column, 'Movie Idea': text_column})
-    df.to_excel('freemovieidea-archive.xlsx', sheet_name='sheet1', index=False)
-    # print(df)
+    df=pd.read_excel("freemovieidea-archive.xlsx", engine='openpyxl')
+
+    #df.append({'Date': date_column, 'Movie Idea': text_column}, ignore_index = True)
+    df2 = DataFrame({'Date': [date_column], 'Movie Idea': [text_column]})
+
+    df3 = pd.concat([df, df2], ignore_index = True)
+    df3.reset_index()
+
+    df3.to_excel('freemovieidea-archive.xlsx', sheet_name='sheet1', index=False)
+
+    del df
+    del df2
+    del df3
+    gc.collect()
+
+
+
+
+
 
 main()
