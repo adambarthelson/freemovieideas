@@ -18,10 +18,10 @@ def main():
     del df
 
     for image in images:
-        # try:
-        extract_text_from_image(image)
-        # except Exception:
-            # pass
+        try:
+            extract_text_from_image(image)
+        except Exception:
+            pass
 
 
 def collect_images(pattern):
