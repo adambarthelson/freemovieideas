@@ -11,7 +11,11 @@ def main():
     images = collect_images('./images_to_extract/*.jpg')
     images.append(collect_images('./images_to_extract/*.png'))
     images.append(collect_images('./images_to_extract/*.jpeg'))
-    images = [item for sublist in images for item in sublist]
+    
+
+    # print(flatten(images))
+    print("Images to OCR:", len(images))
+    print("Running...")
 
     df = DataFrame({'Date': [], 'Movie Idea': []})
     df.to_excel('freemovieidea-archive.xlsx', sheet_name='sheet1', index=False)
@@ -23,6 +27,14 @@ def main():
         except Exception:
             pass
 
+    print("Done!")
+
+def flatten(list_of_lists):
+    if len(list_of_lists) == 0:
+        return list_of_lists
+    if isinstance(list_of_lists[0], list):
+        return flatten(list_of_lists[0]) + flatten(list_of_lists[1:])
+    return list_of_lists[:1] + flatten(list_of_lists[1:])
 
 def collect_images(pattern):
     files = []
@@ -72,7 +84,7 @@ def first(iterable, condition = lambda x: True):
 
 
 def extract_text_from_image(image):
-    full_text = pytesseract.image_to_string(image).split('\n')
+    full_text = pytesseract.image_to_string(image, lang='eng', config='--psm 6').split('\n')
     full_text = list(filter(None, full_text))
     full_text = list(map(fix_utf8, full_text))
     if "< S" in full_text: full_text.remove("< S")
@@ -118,10 +130,6 @@ def write_to_xl(date_column, text_column):
     del df2
     del df3
     gc.collect()
-
-
-
-
 
 
 main()
