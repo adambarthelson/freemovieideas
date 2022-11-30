@@ -11,6 +11,8 @@ def main():
     images = collect_images('./images_to_extract/*.jpg')
     images.append(collect_images('./images_to_extract/*.png'))
     images.append(collect_images('./images_to_extract/*.jpeg'))
+
+    images = flatten(images)
     
 
     # print(flatten(images))
