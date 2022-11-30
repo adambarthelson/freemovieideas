@@ -8,14 +8,12 @@ import pandas as pd
 from dateutil.parser import parse
 
 def main():
-    images = collect_images('./images_to_extract/*.jpg')
-    images.append(collect_images('./images_to_extract/*.png'))
-    images.append(collect_images('./images_to_extract/*.jpeg'))
-
-    images = flatten(images)
+    images = []
+    images += collect_images('./images_to_extract/*.jpg')
+    images += collect_images('./images_to_extract/*.png')
+    images += collect_images('./images_to_extract/*.jpeg')
     
 
-    # print(flatten(images))
     print("Images to OCR:", len(images))
     print("Running...")
 
