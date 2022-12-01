@@ -29,13 +29,6 @@ def main():
 
     print("Done!")
 
-def flatten(list_of_lists):
-    if len(list_of_lists) == 0:
-        return list_of_lists
-    if isinstance(list_of_lists[0], list):
-        return flatten(list_of_lists[0]) + flatten(list_of_lists[1:])
-    return list_of_lists[:1] + flatten(list_of_lists[1:])
-
 def collect_images(pattern):
     files = []
     start_dir = os.getcwd()
@@ -98,7 +91,7 @@ def extract_text_from_image(image):
         if date == '' or date == ' ':
             date_index += 1
             date = full_text[date_index]
-        body = '\n'.join(full_text[date_index+1:-3 or None])
+        body = '\n'.join(full_text[date_index+1:0 or None])
         if body == "":
             body = '\n'.join(full_text[date_index+1:0 or None])
         print("Date:", date)
